@@ -18,16 +18,15 @@ import ExploreCollections from './Pages/ExploreCollections';
 import BuyNFTPage from './Pages/NFTs/BuyNFTPage';
 import { ExplorePageProvider } from './Context/ExplorePageContext';
 
-
 function App() {
   return (
-    <>
+    <div className="relative background">
       <TRAlert />
       <Web3Provider>
         <ExplorePageProvider>
 
           <Router>
-            <Navbar />
+            {/* <Navbar /> */}
 
             <Switch>
               <Route path="/createCollection">
@@ -59,7 +58,7 @@ function App() {
           </Router>
         </ExplorePageProvider>
       </Web3Provider>
-    </>
+    </div>
   );
 }
 

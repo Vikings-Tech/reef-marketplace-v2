@@ -1,0 +1,77 @@
+.background {
+
+    position: relative;
+    background-color: #2a2a72;
+    background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+}
+
+.left-animate {
+    animation: transitionsFromLeft 1.75s;
+}
+
+.right-animate {
+    animation: transitionsFromRight 1.75s;
+
+}
+
+.bottom-animate {
+    animation: iteration-count;
+}
+
+.jellyfish-animate {
+    animation: animate 9s infinite;
+}
+
+@keyframes animate {
+    0% {
+        transform: translate(0px, 0px);
+    }
+
+    20% {
+        transform: translate(20px, 20px);
+    }
+
+    20% {
+        transform: translate(10px, 10px);
+    }
+
+    40% {
+        transform: translate(-10px, -10px);
+    }
+
+    60% {
+        transform: translate(15px, 10px);
+    }
+
+    80% {
+        transform: translate(20px, 20px);
+    }
+
+    100% {
+        transform: translate(0px, 0px);
+    }
+}
+
+@keyframes transitionsFromRight {
+    from {
+        opacity: 0;
+        transform: translate(1em, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes transitionsFromLeft {
+    from {
+        opacity: 0;
+        transform: translate(-1em, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}

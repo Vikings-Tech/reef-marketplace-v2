@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
     const { account, extensionSetup } = useContext(Web3Context);
     return (<nav
-        class="flex items-center justify-between flex-wrap bg-white py-4 lg:px-12 shadow border-solid border-t-2 border-primary">
+        class="top-0 z-50 sticky flex items-center justify-between flex-wrap bg-transparent py-4 lg:px-12 shadow border-solid border-t-2 border-primary">
         <div class="flex justify-between lg:w-auto w-full lg:border-b-0 pl-6 pr-2 border-solid border-b-2 border-gray-300 pb-5 lg:pb-0">
             <div class="flex items-center flex-shrink-0 text-gray-800 mr-4">
                 <Link to="/" class="font-semibold text-xl tracking-tight">Reef Marketplace</Link>
