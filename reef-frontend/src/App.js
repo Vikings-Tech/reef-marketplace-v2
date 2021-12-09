@@ -17,8 +17,14 @@ import CreateNFT from './Pages/NFTs/CreateNFT';
 import ExploreCollections from './Pages/ExploreCollections';
 import BuyNFTPage from './Pages/NFTs/BuyNFTPage';
 import { ExplorePageProvider } from './Context/ExplorePageContext';
+import Aos from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    Aos.init({ duration: 500 })
+  }, [])
   return (
     <div className="relative background">
       <TRAlert />
@@ -26,7 +32,7 @@ function App() {
         <ExplorePageProvider>
 
           <Router>
-            {/* <Navbar /> */}
+            <Navbar />
 
             <Switch>
               <Route path="/createCollection">
