@@ -14,12 +14,13 @@ import { TRAlert } from 'tr-alerts';
 import UserCollections from './Pages/UserCollections';
 import CollectionDetail from './Pages/CollectionDetail';
 import CreateNFT from './Pages/NFTs/CreateNFT';
-import ExploreCollections from './Pages/ExploreCollections';
+import ExploreCollections from 'Pages/Collections/Explore';
 import BuyNFTPage from './Pages/NFTs/BuyNFTPage';
 import { ExplorePageProvider } from './Context/ExplorePageContext';
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from 'react';
+import YourCollections from 'Pages/Collections/Me/index';
 
 function App() {
   useEffect(() => {
@@ -51,6 +52,12 @@ function App() {
                 <BuyNFTPage />
               </Route>
               <Route path="/explore">
+                <ExploreCollections />
+              </Route>
+              <Route path="/collections/me">
+                <YourCollections />
+              </Route>
+              <Route path="/collections/explore">
                 <ExploreCollections />
               </Route>
 

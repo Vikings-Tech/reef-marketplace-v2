@@ -1,21 +1,22 @@
 import { useContext, useState, useEffect } from "react";
 import Web3Context, { Web3Provider } from "../../Context/Web3Context";
 import { Link } from "react-router-dom";
+import HoverComponent from "./HoverComponent";
 const Navbar = () => {
     let listener = null
     const [scrollState, setScrollState] = useState("top")
     useEffect(() => {
         listener = document.addEventListener("scroll", e => {
             var scrolled = document.scrollingElement.scrollTop
-            if (scrolled >= 120) {
-                if (scrollState !== "amir") {
-                    setScrollState("amir")
-                }
-            } else {
-                if (scrollState !== "top") {
-                    setScrollState("top")
-                }
+            if (window.pageYOffset > 10) {
+                setScrollState("amir")
+
             }
+            else {
+                setScrollState("top")
+
+            }
+
         })
         return () => {
             document.removeEventListener("scroll", listener)
@@ -23,7 +24,7 @@ const Navbar = () => {
     }, [scrollState])
     const { account, extensionSetup } = useContext(Web3Context);
     return (<nav
-        class={`top-0 z-50 sticky flex items-center justify-between flex-wrap ${scrollState === "top" ? "bg-transparent" : "bg-blue-600"} py-4 lg:px-12`}>
+        class={`top-0 z-50 sticky flex items-center justify-between flex-wrap ${scrollState === "top" ? "bg-transparent" : "nav-color"} py-4 lg:px-12`}>
         <div class="flex justify-between lg:w-auto w-full lg:border-b-0 pl-6 pr-2 border-solid border-b-2 border-gray-300 pb-5 lg:pb-0">
             <div class="flex items-center flex-shrink-0 text-gray-800 mr-4">
                 <Link to="/" class="font-semibold text-xl tracking-tight">Reef Marketplace</Link>
@@ -40,14 +41,22 @@ const Navbar = () => {
             </div>
         </div>
         <div class="text-md font-bold items-center  text-blue-700 ">
-            <Link to="/myCollections"
-                class="block mt-4 lg:inline-block lg:mt-0 text-primary px-4 py-2 rounded  mr-2">
-                Collections
-            </Link>
-            <Link to="/explore"
-                class=" block mt-4 lg:inline-block lg:mt-0 text-primary px-4 py-2 rounded  mr-2">
-                Explore
-            </Link>
+            <HoverComponent
+                title="Collections"
+                navigator={[
+                    { name: "My Collections", path: "/collections/me" },
+                    { name: "Explore Collections", path: "/collections/explore" },
+                ]}
+            />
+            <HoverComponent
+                title="NFTs"
+                navigator={[
+                    { name: "Marketplace", path: "/nfts/marketplace" },
+                    { name: "Listed", path: "/nfts/listed" },
+                    { name: "Owned", path: "/nfts/owned" },
+                ]}
+            />
+
 
         </div>
 

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./style.css"
 import Particles from "react-tsparticles";
@@ -9,6 +9,8 @@ import Fishes from "assets/HomePage/fishes.png";
 import JellyFish from "assets/HomePage/jellyfish.png";
 import Navbar from "Components/Navbar/index";
 import TopPicks from "./TopPicks";
+import Spinner from "Components/Loader/Spinner";
+import PrimaryButton from "Components/Buttons/PrimaryButton/index";
 const Home = () => {
 
 
@@ -19,7 +21,7 @@ const Home = () => {
                     <span className="block xl:inline">Your one stop to Create and Sell</span>{' '}
                     <span className="block text-primary xl:inline">NFTs</span>
                 </h1>
-                <p className="mt-3 max-w-md mx-auto text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
+                <p className="mt-3 max-w-md mx-auto text-lg text-white sm:text-xl md:mt-5 md:max-w-3xl">
                     The coolest NFT Marketplace on Reef Chain ;)
                 </p>
                 <div className="mt-10 sm:flex sm:justify-center lg:justify-start">
@@ -52,6 +54,17 @@ const Home = () => {
 
 
 const NewHome = () => {
+    const [loadAssets, setLoadAssets] = useState([false, false, false]);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const loadComplete = (index) => {
+        console.log("here")
+        let oldLoad = [...loadAssets];
+        oldLoad[index] = true;
+        if (oldLoad.every((v) => v)) {
+            setIsLoaded(true)
+        }
+        setLoadAssets(oldLoad);
+    }
     const particlesInit = (main) => {
         console.log(main);
 
@@ -59,44 +72,43 @@ const NewHome = () => {
     };
 
     const particlesLoaded = (container) => {
+        // loadComplete(3)
         console.log(container);
     };
     return (<>
+        {!isLoaded && <div className="flex items-center justify-around" style={{ height: "100vh", width: "100vw" }}><Spinner /></div>}
 
-        <div className="relative" style={{ height: "100vh", width: "100vw" }}>
+        <div className={`relative ${isLoaded ? "" : "hidden"}`} style={{ height: "100vh", width: "100vw" }}>
             {/* <Navbar /> */}
-            <img src={CoralRock2} alt="Coral Rock" className="w-full z-0 left-animate absolute bottom-0 left-0" />
+            <img onLoad={() => loadComplete(0)} src={CoralRock2} alt="Coral Rock" className="w-full z-0 left-animate absolute bottom-0 left-0" />
             {/* <img src={Fishes} alt="Coral Rock" className="h-full absolute top-0 left-0" /> */}
-            <img src={JellyFish} alt="Coral Rock" className="h-36 absolute top-24 right-52 jellyfish-animate" />
+            <img onLoad={() => loadComplete(1)} src={JellyFish} alt="Coral Rock" className="h-36 absolute top-24 right-52 jellyfish-animate" />
 
-            <img src={CoralRock} alt="Coral Rock" className="h-full z-0 right-animate absolute bottom-0 right-0" />
+            <img onLoad={() => loadComplete(2)} src={CoralRock} alt="Coral Rock" className="h-full z-0 right-animate absolute bottom-0 right-0" />
 
-            <div className="mx-auto max-w-7xl w-full pt-16 pb-20 text-center left-animate lg:py-48 lg:text-left">
+            <div className={`mx-auto ${isLoaded ? "" : "hidden"} max-w-7xl w-full pt-8 pb-20 text-center left-animate lg:py-32 lg:text-left`}>
                 <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
                     <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-                        <span className="block xl:inline  z-40">Your one stop to Create and Sell</span>{' '}
-                        <span className="block text-primary xl:inline z-40">NFTs</span>
+                        <span className="block xl:inline  z-40">Deep Dive into Creating and Selling</span>{' '}
+                        <span
+                            style={{ color: "#034059" }}
+                            className="block xl:inline z-40">NFTs</span>
                     </h1>
-                    <p className="mt-3 max-w-md mx-auto text-lg  z-40 text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
-                        The coolest NFT Marketplace on Reef Chain ;)
+                    <p className="mt-3 max-w-md mx-auto text-lg  z-40 text-white sm:text-xl md:mt-5 md:max-w-3xl">
+                        Create, sell, lend and more all in one Marketplace
                     </p>
                     <div className="mt-10 sm:flex sm:justify-center lg:justify-start">
-                        <div className="rounded-md shadow">
-                            <Link
-                                to="/createCollection"
-                                className=" z-40 w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary md:py-4 md:text-lg md:px-10"
-                            >
-                                Create
-                            </Link>
-                        </div>
-                        <div className=" z-40 mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
-                            <Link
-                                to="/explore"
-                                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10"
-                            >
-                                Explore
-                            </Link>
-                        </div>
+
+
+                        <Link
+                            to="/explore"
+
+                        >
+                            <PrimaryButton
+                                title="Explore"
+
+                            />
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -181,7 +193,9 @@ const NewHome = () => {
                 detectRetina: true,
             }}
             init={particlesInit} loaded={particlesLoaded} />
-        <TopPicks />
+        {isLoaded &&
+            <TopPicks />
+        }
 
     </>)
 }
