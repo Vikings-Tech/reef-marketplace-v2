@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import "./style.css"
 
-const TopPicks = ({ }) => {
+const TopPicks = ({ title }) => {
     const nsettings = {
         dots: true,
         infinite: false,
@@ -18,12 +18,13 @@ const TopPicks = ({ }) => {
         // prevArrow: <PreviousArrow />,
 
     }
-    return (<>
-        <h1 className=" mt-32 w-full items-center text-center text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-            <span className="block text-center xl:inline">Top Picks</span>{' '}
+    return (<div data-aos="fade-up">
+        <h1 ao className=" my-32 w-full items-center text-center text-4xl tracking-tight font-bold text-gray-900 ">
+            <span className="block font-otoman text-white   xl:inline">{title}</span>{' '}
         </h1>
         <div className="my-16 max-w-6xl mx-auto">
             <Slider {...nsettings}>
+
                 <NewCard />
                 <NewCard />
                 <NewCard />
@@ -34,6 +35,6 @@ const TopPicks = ({ }) => {
             </Slider>
         </div>
 
-    </>);
+    </div>);
 }
 export default TopPicks

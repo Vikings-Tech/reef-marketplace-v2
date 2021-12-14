@@ -64,7 +64,7 @@ const YourCollections = () => {
     }
     return (<>
         <div className="container mx-auto  lg:px-8 mt-4 pb-16">
-            <div className="my-8 text-6xl font-bold w-full text-center">Your Collections</div>
+            <div className="my-8 font-otoman text-4xl font-bold w-full text-center">Your Collections</div>
             {!userCollections ? <Spinner /> :
                 userCollections?.length === 0 ?
                     <EmptySection item="collection" onClick={onClickCreateCollection} /> :

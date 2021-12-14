@@ -21,6 +21,8 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from 'react';
 import YourCollections from 'Pages/Collections/Me/index';
+import Footer from 'Components/Footer/index';
+
 
 function App() {
   useEffect(() => {
@@ -67,6 +69,7 @@ function App() {
               </Route>
             </Switch>
 
+            <Footer />
 
           </Router>
         </ExplorePageProvider>

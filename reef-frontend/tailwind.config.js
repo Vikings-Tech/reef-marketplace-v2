@@ -10,6 +10,11 @@ module.exports =
           dark: "#0C2D48",
         }
       },
+      fontFamily: {
+        'otoman': ['Otomanopee One'],
+        'sans': ['Roboto',
+          'system-ui',]
+      }
     },
   },
   variants: {

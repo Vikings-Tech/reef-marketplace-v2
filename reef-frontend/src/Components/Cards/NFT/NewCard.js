@@ -12,8 +12,8 @@ const NewCard = ({ data = {} }) => {
     const { highestBid, endsAt, sellerA } = (currentAuction || {});
     const { seller: sellerS, price } = (currentSellOrder || {})
     return (<>
-        <div className="glass-2 py-2 text-white">
-            <div className="relative h-64 m-4 rounded-md bg-gray-400" style={{ backgroundImage: `url("${image}")`, backgroundSize: "cover" }}>
+        <div className="glass-2 py-1 mx-6 my-8 text-white">
+            <div className="relative h-80 m-2 rounded-md bg-gray-400" style={{ backgroundImage: `url("${image}")`, backgroundSize: "cover" }}>
                 {/* <div
                     onClick={() => setLike(!like)}
                     className=" cursor-pointer absolute top-4 right-4 rounded-md h-14 w-14 heart-bg mx-auto flex justify-around items-center">
@@ -21,7 +21,7 @@ const NewCard = ({ data = {} }) => {
             </div> */}
             </div>
             <Link to={`${id}`} >
-                <div className=" w-full truncate  mx-4  font-bold"> Mera NFT</div>
+                <div className=" w-full truncate  mx-4  font-bold"> Example NFT </div>
                 <div className=" truncate  px-4 text-sm mb-4">@{sellerA?.address || sellerS?.address || "Unknown"}</div>
                 {(price && sellerS) &&
                     <div className="flex px-4 pt-8 pb-4 my-4 border-t border-white justify-between items-center">

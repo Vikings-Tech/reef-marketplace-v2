@@ -22,6 +22,12 @@
     animation: animate 9s infinite;
 }
 
+.center {
+    -webkit-transform: scale(1.05, 1.05) !important;
+    -ms-transform: scale(1.05, 1.05) !important;
+    transform: scale(1.05, 1.05) !important;
+}
+
 @keyframes animate {
     0% {
         transform: translate(0px, 0px);

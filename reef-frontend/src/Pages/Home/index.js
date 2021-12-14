@@ -11,6 +11,7 @@ import Navbar from "Components/Navbar/index";
 import TopPicks from "./TopPicks";
 import Spinner from "Components/Loader/Spinner";
 import PrimaryButton from "Components/Buttons/PrimaryButton/index";
+import FeaturedCollections from "./FeaturedCollections";
 const Home = () => {
 
 
@@ -89,7 +90,7 @@ const NewHome = () => {
             <div className={`mx-auto ${isLoaded ? "" : "hidden"} max-w-7xl w-full pt-8 pb-20 text-center left-animate lg:py-32 lg:text-left`}>
                 <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
                     <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-                        <span className="block xl:inline  z-40">Deep Dive into Creating and Selling</span>{' '}
+                        <span className="block xl:inline font-otoman  z-40">Deep Dive into Creating and Selling</span>{' '}
                         <span
                             style={{ color: "#034059" }}
                             className="block xl:inline z-40">NFTs</span>
@@ -193,8 +194,18 @@ const NewHome = () => {
                 detectRetina: true,
             }}
             init={particlesInit} loaded={particlesLoaded} />
+
         {isLoaded &&
-            <TopPicks />
+            <FeaturedCollections title="Featured Collections" />
+        }
+        {isLoaded &&
+            <TopPicks title="Recent Listings" />
+        }
+        {isLoaded &&
+            <TopPicks title="Top Auctions" />
+        }
+        {isLoaded &&
+            <TopPicks title="Editor's Picks" />
         }
 
     </>)

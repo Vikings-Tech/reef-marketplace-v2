@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import Web3Context, { Web3Provider } from "../../Context/Web3Context";
 import { Link } from "react-router-dom";
 import HoverComponent from "./HoverComponent";
+import Logo from "assets/oyester_logo.svg";
 const Navbar = () => {
     let listener = null
     const [scrollState, setScrollState] = useState("top")
@@ -26,8 +27,11 @@ const Navbar = () => {
     return (<nav
         class={`top-0 z-50 sticky flex items-center justify-between flex-wrap ${scrollState === "top" ? "bg-transparent" : "nav-color"} py-4 lg:px-12`}>
         <div class="flex justify-between lg:w-auto w-full lg:border-b-0 pl-6 pr-2 border-solid border-b-2 border-gray-300 pb-5 lg:pb-0">
-            <div class="flex items-center flex-shrink-0 text-gray-800 mr-4">
-                <Link to="/" class="font-semibold text-xl tracking-tight">Reef Marketplace</Link>
+            <div class="flex items-center flex-shrink-0 text-white mr-4">
+                <Link to="/" class="flex font-otoman items-center font-semibold text-xl tracking-tight">
+                    <img className="h-12 w-12 mr-2" src={Logo} />
+                    <div>Oyster</div>
+                </Link>
             </div>
 
             <div class="block lg:hidden ">
