@@ -8,8 +8,8 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Counters.sol";
 import "../IRRoyalty.sol";
 
-contract Auction is ReentrancyGuard{
-    
+contract DecliningAuction is ReentrancyGuard{
+
     bytes4 public constant ERC721INTERFACE = type(IERC721).interfaceId;
     bytes4 public constant ERC2981INTERFACE = type(IERC2981).interfaceId;
 
@@ -24,14 +24,16 @@ contract Auction is ReentrancyGuard{
     address payable creator;
     address payable seller;
     address payable owner;
-    uint256 price;
+    uint256 initialPrice;
+    uint256 minPrice;
     bool sold;
     }
-    
+
     struct AuctionInfo {
         uint256 highestBid;
         address highestBidder;
         uint256 royalty;
+        uint256 timeStarted;
         uint256 timeEnding;
     }
     
@@ -67,49 +69,40 @@ contract Auction is ReentrancyGuard{
     function createMarketAuction(
     address nftContract,
     uint256 tokenId,
-    uint256 floorPrice,
+    uint256 initialPrice,
+    uint256 minPrice,
     uint auctionDays
     ) external payable nonReentrant{
-    require(floorPrice > 0, "Price must be at least 1 wei");
+    require(initialPrice > 0, "Price must be at least 1 wei");
     require(auctionDays > 0, "Auction time can't be 0 days");
     require(ERC165Checker.supportsInterface(nftContract,ERC721INTERFACE),"Contract needs to be ERC721");
     require(IERC721(nftContract).ownerOf(tokenId) == msg.sender,"Only owner can create listing");
+    require(minPrice < initialPrice,"min price needs to be lower than initial price");
     _itemIds.increment();
     uint256 itemId = _itemIds.current();
-    idToMarketItem[itemId] =  MarketItem(
-                                      itemId,
-                                      nftContract,
-                                      tokenId,
-                                      payable(creator),
-                                      payable(msg.sender),
-                                      payable(address(0)),
-                                      floorPrice,
-                                      false
-                                    );
+    address creator;
+    uint256 royaltyAmount;
     if (ERC165Checker.supportsInterface(nftContract,ERC2981INTERFACE)){
-        (address creator,uint256 royaltyAmount) = IERC2981(nftContract).royaltyInfo(tokenId,floorPrice);
-        
+        (creator,royaltyAmount) = IERC2981(nftContract).royaltyInfo(tokenId,initialPrice);
     }
-    else{
-        address creator = msg.sender;
-        uint royaltyAmount = 0;
-        idToMarketItem[itemId] =  MarketItem(
-                                      itemId,
-                                      nftContract,
-                                      tokenId,
-                                      payable(creator),
-                                      payable(msg.sender),
-                                      payable(address(0)),
-                                      floorPrice,
-                                      royaltyAmount,
-                                      false
-                                    );
-    }
+    idToMarketItem[itemId] =  MarketItem(
+                                    itemId,
+                                    nftContract,
+                                    tokenId,
+                                    payable(creator),
+                                    payable(msg.sender),
+                                    payable(address(0)),
+                                    initialPrice,
+                                    minPrice,
+                                    false
+                                );
     
     IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
     
     auctionData[itemId] = AuctionInfo(0,
                                       address(0),
+                                      royaltyAmount,
+                                      block.timestamp,
                                       (block.timestamp + auctionDays*1 days)
                                      );
     
@@ -119,40 +112,47 @@ contract Auction is ReentrancyGuard{
       tokenId,
       msg.sender,
       address(0),
-      floorPrice
+      initialPrice
     );
     }
     
-  function createAuctionBid(
-      uint256 itemId
+    function createAuctionBid(
+        uint256 itemId
     ) external payable nonReentrant{
         MarketItem storage currentItem = idToMarketItem[itemId];
         AuctionInfo storage currentInfo = auctionData[itemId];
         require(!currentItem.sold,"Item has already been sold");
         require(currentInfo.timeEnding > block.timestamp,"Auction has already ended");
-        require(msg.value > currentItem.price,"You need to pay more than floor price");
-        require(msg.value > currentInfo.highestBid,"You need to pay more than current highest bid");
+        
+        if(currentInfo.highestBid != 0){
+            require(msg.value > currentInfo.highestBid,"You need to pay more than current highest bid");
+        }
+        else{
+            uint currentValue = (currentItem.initialPrice - currentItem.minPrice)*(block.timestamp - currentInfo.timeStarted)/(currentInfo.timeEnding - currentInfo.timeStarted);
+            require(msg.value > currentValue,"You need to pay more than current value of the NFT");
+        }
         payable(currentInfo.highestBidder).transfer(currentInfo.highestBid);
         currentInfo.highestBidder = msg.sender;
         currentInfo.highestBid = msg.value;
         emit MarketItemBid(itemId,msg.sender,msg.value);
     }
-    
-  function createAuctionSale(
+
+
+    function createAuctionSale(
         address nftContract,
         uint itemId
-      ) external payable nonReentrant{
+        ) external payable nonReentrant{
         MarketItem storage currentItem = idToMarketItem[itemId];
         AuctionInfo storage currentInfo = auctionData[itemId];
         require(!currentItem.sold,"Item has already been sold");
         require(currentInfo.timeEnding < block.timestamp,"Auction has not yet ended");
         require(msg.sender == currentInfo.highestBidder,"Sender is not the highest bidder");
-        if(currentItem.creator == currentItem.seller || currentItem.creator != address(0)){
+        if(currentItem.creator == currentItem.seller ){
         payable(currentItem.nftContract).transfer(msg.value);
         }
-        else if(currentItem.creator != address(0)){
-        payable(currentItem.seller).transfer(currentItem.royalty);
-        currentItem.seller.transfer(msg.value-currentItem.royalty);
+        else{
+        payable(currentItem.seller).transfer(currentInfo.royalty);
+        currentItem.seller.transfer(msg.value-currentInfo.royalty);
         }
         IERC721(nftContract).transferFrom(address(this), msg.sender, currentItem.tokenId);
         currentItem.owner = payable(msg.sender);
@@ -160,7 +160,7 @@ contract Auction is ReentrancyGuard{
         _itemsSold.increment();
         emit MarketItemSold(itemId,nftContract,currentItem.seller,currentItem.owner);
         }
-    
+
     function unlistItem(uint itemId) external nonReentrant{
         require(!idToMarketItem[itemId].sold,"Sold items can't be unlisted");
         require(idToMarketItem[itemId].seller == msg.sender,"Sender is not lister");
@@ -179,5 +179,4 @@ contract Auction is ReentrancyGuard{
         itemId
         );
     }
-    
 }
