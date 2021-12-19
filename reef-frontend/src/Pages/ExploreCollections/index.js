@@ -9,6 +9,7 @@ import { getJSONfromHash } from "../../config/axios";
 import ExplorePageContext from "../../Context/ExplorePageContext";
 import Web3Context from "../../Context/Web3Context";
 
+
 const ExploreCollections = () => {
     const { selectedNFTtoBuy, setSelectedNFTtoBuy } = useContext(ExplorePageContext);
     const { fetchMarketItems, fetchMyNFTs, fetchItemsCreated, startBidListening } = useContext(Web3Context);
@@ -37,7 +38,7 @@ const ExploreCollections = () => {
             <Tabs tabs={["Marketplace", "Listed", "Owned"]}>
                 {/*NFTs for sale*/}
                 {!allCollections ? <Spinner /> :
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className=" grid grid-cols-3 gap-4">
                         {allCollections.map((data) => {
                             return (<NFTForSaleCard {...(data.collection)} auction={data.auction} />);
                         })}

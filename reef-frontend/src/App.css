@@ -28,11 +28,129 @@
   color: #61dafb;
 }
 
+.collection {
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0px 4px 25px rgba(35, 35, 35, 0.29);
+  border-radius: 7px;
+  transition: all 0.3s ease;
+
+}
+
+.collection:hover {
+  -webkit-transform: scale(1.05, 1.05) !important;
+  -ms-transform: scale(1.05, 1.05) !important;
+  transform: scale(1.05, 1.05) !important;
+}
+
+.nav-color {
+  background: rgba(20, 93, 160, 0.63);
+
+}
+
+.hover-menu {
+  background: rgba(20, 93, 160, 0.13);
+  box-shadow: 0px 4px 25px rgba(35, 35, 35, 0.29);
+  border-radius: 7px;
+}
+
+.glass-2 {
+  background: rgba(20, 93, 160, 0.13);
+  box-shadow: 0px 4px 25px rgba(35, 35, 35, 0.29);
+  border-radius: 7px;
+  margin: 60px;
+  transition: all 0.3s ease;
+}
+
+.glass-2:hover {
+  -webkit-transform: scale(1.05, 1.05) !important;
+  -ms-transform: scale(1.05, 1.05) !important;
+  transform: scale(1.05, 1.05) !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
+  }
+}
+
+.background {
+  min-height: 100vh;
+  position: relative;
+  background-color: #2a2a72;
+  background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+}
+
+.left-animate {
+  animation: transitionsFromLeft 1.75s;
+}
+
+.right-animate {
+  animation: transitionsFromRight 1.75s;
+
+}
+
+.bottom-animate {
+  animation: iteration-count;
+}
+
+.jellyfish-animate {
+  animation: animate 9s infinite;
+}
+
+@keyframes animate {
+  0% {
+    transform: translate(0px, 0px);
+  }
+
+  20% {
+    transform: translate(20px, 20px);
+  }
+
+  20% {
+    transform: translate(10px, 10px);
+  }
+
+  40% {
+    transform: translate(-10px, -10px);
+  }
+
+  60% {
+    transform: translate(15px, 10px);
+  }
+
+  80% {
+    transform: translate(20px, 20px);
+  }
+
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes transitionsFromRight {
+  from {
+    opacity: 0;
+    transform: translate(1em, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes transitionsFromLeft {
+  from {
+    opacity: 0;
+    transform: translate(-1em, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
   }
 }

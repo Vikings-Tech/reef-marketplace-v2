@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "reef-marketplace-7236e"
+  },
+  "targets": {
+    "reef-marketplace-7236e": {
+      "hosting": {
+        "testing": [
+          "reef-testing"
+        ]
+      }
+    }
   }
 }

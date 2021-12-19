@@ -81,8 +81,9 @@
 }
 
 .tabs-style-flip nav a:hover {
-  color: #ff0066;
+  color: #F46E1B;
 }
+
 .tabs-style-flip nav a:focus,
 .tabs-style-flip nav li.tab-current a {
   color: #fff;
@@ -102,7 +103,7 @@
   z-index: -1;
   width: 100%;
   height: 100%;
-  background-color: #ff0066;
+  background-color: #F46E1B;
   content: "";
   -webkit-transition: -webkit-transform 0.3s, background-color 0.3s;
   transition: transform 0.3s, background-color 0.3s, font-size 0.3s;
@@ -115,7 +116,7 @@
 }
 
 .tabs-style-flip nav li.tab-current a::after {
-  background-color: #ff0066;
+  background-color: #F46E1B;
   -webkit-transform: perspective(900px) rotate3d(1, 0, 0, 0deg);
   transform: perspective(900px) rotate3d(1, 0, 0, 0deg);
   font-size: 1.875rem;
