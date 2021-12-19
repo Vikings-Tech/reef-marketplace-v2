@@ -1,9 +1,9 @@
-.background {
+/* .background {
 
     position: relative;
     background-color: #2a2a72;
     background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
-}
+} */
 
 .left-animate {
     animation: transitionsFromLeft 1.75s;

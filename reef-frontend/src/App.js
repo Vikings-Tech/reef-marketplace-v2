@@ -22,6 +22,7 @@ import "aos/dist/aos.css";
 import { useEffect } from 'react';
 import YourCollections from 'Pages/Collections/Me/index';
 import Footer from 'Components/Footer/index';
+import Profile from 'Pages/Profile/index';
 
 
 function App() {
@@ -62,7 +63,9 @@ function App() {
               <Route path="/collections/explore">
                 <ExploreCollections />
               </Route>
-
+              <Route path="/profile">
+                <Profile />
+              </Route>
 
               <Route path="/">
                 <Home />

@@ -4,6 +4,9 @@ import { useParams } from "react-router";
 import Text from "../../Components/Inputs/Text";
 import Web3Context from "../../Context/Web3Context"
 import { useAlert } from "tr-alerts";
+import Heading from "Components/Texts/Heading";
+import Button2 from "Components/Buttons/Button2/index";
+
 
 export default function DetailBanner({ metaData, isApproved, setIsApproved }) {
     const showAlert = useAlert();
@@ -13,7 +16,24 @@ export default function DetailBanner({ metaData, isApproved, setIsApproved }) {
     const onClickApproval = async () => {
         setIsApproved(await setApprovalForAll(true, contractAddress));
     }
+    return (<div className="px-4 mx-auto mt-8 flex items-center flex-col w-full">
+        <img className="w-full bg-gray-100 h-64 object-cover" src={`https://ipfs.infura.io/ipfs/${metaData?.image}`} />
 
+        <Heading className="mt-8">{metaData.title}</Heading>
+        <div className="mt-4 font-normal text-2xl text-white">{metaData.subtitle}</div>
+
+        <div className="text-center text-white mx-6 lg:mx-32 my-4">
+            {metaData.description}
+        </div>
+        <Button2
+            onClick={onClickApproval}
+            type="button"
+        >
+            {/* <MailIcon className=" mr-2  text-gray-400" aria-hidden="true" /> */}
+            <span>{isApproved ? "Authorized" : "Authorise"}</span>
+        </Button2>
+
+    </div>);
     return (
         <div className=" mt-12 h-96 max-w-5xl mx-auto rounded-lg shadow-md">
             <div className="relative">

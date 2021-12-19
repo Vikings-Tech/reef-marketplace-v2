@@ -1,3 +1,4 @@
+import SectionHeading from 'Components/Texts/SectionHeading';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import CollectionCard from '../../Components/CollectionCard';
@@ -79,7 +80,8 @@ const CollectionDetail = () => {
 
             <div class="">
                 <div className="flex my-8 justify-around items-center">
-                    <h1 className="text-5xl text-gray-700 font-bold text-center">Your NFTs</h1>
+                    <SectionHeading>NFTs in this Collection</SectionHeading>
+
 
                 </div>
                 {selectedNFT ? <NFTDetail {...selectedNFT} isApproved={isApproved} /> : <></>}

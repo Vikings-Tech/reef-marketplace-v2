@@ -3,6 +3,7 @@ import Web3Context, { Web3Provider } from "../../Context/Web3Context";
 import { Link } from "react-router-dom";
 import HoverComponent from "./HoverComponent";
 import Logo from "assets/oyester_logo.svg";
+import Button2 from "Components/Buttons/Button2/index";
 const Navbar = () => {
     let listener = null
     const [scrollState, setScrollState] = useState("top")
@@ -67,11 +68,12 @@ const Navbar = () => {
         <div class="menu lg:flex lg:items-center  lg:px-3 px-8">
 
 
-
-            <button
+            <Button2
                 onClick={() => { extensionSetup() }}
-                class="block w-48 truncate text-md px-4 py-2 rounded text-white ml-2 font-bold hover:text-white mt-4 hover:bg-red-800 bg-primary lg:mt-0">{account ? account?.toString() : "Connect To Wallet"}</button>
 
+            >
+                {account ? account?.toString() : "Connect To Wallet"}
+            </Button2>
 
         </div>
 

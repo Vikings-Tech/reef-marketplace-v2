@@ -19,7 +19,9 @@ export const Web3Provider = (props) => {
     const [account, setAccounts] = useState();
     const [evmProvider, setEvmProvider] = useState();
     const [isApiConnected, setIsApiConnected] = useState();
-    const [signer, setSigner] = useState();
+    const [signer, setSigner] = useState(new ethers.VoidSigner("0x0000000000000000000000000000000000000000", new Provider({
+        provider: new WsProvider(URL)
+    })));
     const functionsToExport = {};
     functionsToExport.extensionSetup = async () => {
 
