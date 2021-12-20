@@ -9,7 +9,7 @@ import Web3Context from "Context/Web3Context";
 
 const ExploreCollections = () => {
     const history = useHistory()
-    const { getUserCollections, totalCollections, getCollections } = useContext(Web3Context);
+    const { getUserCollections, totalCollections, getCollections, defaultSigner } = useContext(Web3Context);
     const [userCollections, setUserCollections] = useState(undefined);
     const [allCollections, setAllCollections] = useState(undefined);
     const [fetchedCollections, setFetchedCollections] = useState(0);
@@ -22,10 +22,12 @@ const ExploreCollections = () => {
             setFetchedCollections(Math.min(2, result));
 
         }
-        getAllCollections();
-        getUserCollections().then(data => setUserCollections(data));
+        if (defaultSigner) {
+            getAllCollections();
+            getUserCollections().then(data => setUserCollections(data));
+        }
 
-    }, [])
+    }, [defaultSigner])
     const getMoreCollections = async () => {
         setAllCollections([...allCollections, ...(await getCollections(fetchedCollections, Math.min(fetchedCollections + 5, totalCollectionsN)))]);
         setFetchedCollections(Math.min(fetchedCollections + 5, totalCollectionsN));
@@ -64,7 +66,7 @@ const ExploreCollections = () => {
 
     return (<>
         <div className="container mx-auto  lg:px-8 mt-4 pb-16">
-            <div className="my-8 font-otoman text-4xl font-bold w-full text-center">Explore Collections</div>
+            <div className="my-8 font-otoman text-4xl font-bold w-full text-white text-center">Explore Collections</div>
 
             {!allCollections ? <Spinner /> :
                 allCollections?.length === 0 ?

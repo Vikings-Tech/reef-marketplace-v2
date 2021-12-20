@@ -23,6 +23,9 @@ import { useEffect } from 'react';
 import YourCollections from 'Pages/Collections/Me/index';
 import Footer from 'Components/Footer/index';
 import Profile from 'Pages/Profile/index';
+import AllCollections from 'Pages/Marketplace/All';
+import ListedCollections from 'Pages/Marketplace/Listed';
+import OwnedCollections from 'Pages/Marketplace/Owned';
 
 
 function App() {
@@ -39,6 +42,7 @@ function App() {
             <Navbar />
 
             <Switch>
+
               <Route path="/createCollection">
                 <CreateCollection />
               </Route>
@@ -54,6 +58,16 @@ function App() {
               <Route path="/explore/detail">
                 <BuyNFTPage />
               </Route>
+              <Route path="/nfts/marketplace">
+                <AllCollections />
+              </Route>
+              <Route path="/nfts/listed">
+                <ListedCollections />
+              </Route>
+              <Route path="/nfts/owned">
+                <OwnedCollections />
+              </Route>
+
               <Route path="/explore">
                 <ExploreCollections />
               </Route>

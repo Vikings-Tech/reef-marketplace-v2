@@ -1,13 +1,17 @@
 import React, { useState, createContext } from "react";
 import { web3Accounts, web3Enable, } from "@polkadot/extension-dapp"
-import { Provider, Signer } from '@reef-defi/evm-provider';
+import { Provider, Signer, TestAccountSigningKey } from '@reef-defi/evm-provider';
 import { WsProvider } from '@polkadot/rpc-provider';
+import { createTestPairs } from "@polkadot/keyring/testingPairs";
 import FactoryAbi from '../abi/FactoryABI.json';
 import NftABI from '../abi/NftABI.json';
 import MarketPlaceABI from '../abi/MarketPlaceABI.json';
 import { ethers, Contract, utils } from 'ethers';
 import { factoryContractAddress, nftMarketplaceAddress } from "../config/contractAddress";
 import { useAlert } from 'tr-alerts';
+import { createUser, updateUser } from "config/backend";
+import { useHistory } from "react-router-dom";
+import getEvmAddress from "utils/evm-address";
 
 
 const Web3Context = createContext();
@@ -15,6 +19,7 @@ const Web3Context = createContext();
 export const Web3Provider = (props) => {
     const URL = 'wss://rpc-testnet.reefscan.com/ws';
     const showAlert = useAlert();
+    const history = useHistory();
 
     const [account, setAccounts] = useState();
     const [evmProvider, setEvmProvider] = useState();
@@ -22,7 +27,9 @@ export const Web3Provider = (props) => {
     const [signer, setSigner] = useState(new ethers.VoidSigner("0x0000000000000000000000000000000000000000", new Provider({
         provider: new WsProvider(URL)
     })));
+    const [defaultSigner, setDefaultSigner] = useState();
     const functionsToExport = {};
+    const [userDetails, setUserDetails] = useState({});
     functionsToExport.extensionSetup = async () => {
 
         let allInjected = await web3Enable('Reef Marketplace');
@@ -49,9 +56,10 @@ export const Web3Provider = (props) => {
             if (allAccounts[0] && allAccounts[0].address) {
                 showAlert('Success!', 'Wallet Connected!', 'success', 2000)
 
-                console.log(allAccounts);
                 setAccounts(allAccounts[0].address);
             }
+            setUserDetails((await createUser({ wallet_id: allAccounts[0].address }))?.data?.user)
+            console.log(allAccounts[0].address)
 
             const wallet = new Signer(newEvmProvider, allAccounts[0].address, injected);
             // Claim default account
@@ -63,15 +71,60 @@ export const Web3Provider = (props) => {
                 await wallet.claimDefaultAccount();
             }
 
+
             setSigner(wallet);
         })
 
 
     };
     const checkSigner = async () => {
-        if (!signer) {
-            await functionsToExport.extensionSetup();
+        if (!defaultSigner) {
+            const provider = new Provider({
+                provider: new WsProvider(URL),
+            });
+
+            await provider.api.isReady;
+
+
+
+
+            const testPairs = createTestPairs();
+            let pair = testPairs.alice;
+
+
+            const signingKey = new TestAccountSigningKey(provider.api.registry);
+            signingKey.addKeyringPair(pair);
+
+            const signer = new Signer(provider, pair.address, signingKey);
+
+            // Claim default account
+            if (!(await signer.isClaimed())) {
+                console.log(
+                    "No claimed EVM account found -> claimed default EVM account: ",
+                    await signer.getAddress()
+                );
+                await signer.claimDefaultAccount();
+            }
+            setDefaultSigner(signer);
+            return {
+                signer,
+                provider,
+            };
+            const voidProvider = new Provider({
+                provider: new WsProvider(URL)
+            })
+            voidProvider.api.on("ready", async () => {
+                const voidSigner = new ethers.VoidSigner("5Hg584SyhDRfVneuhYxbTRpsfC1hpjaZJVB7akUKUg5DcedQ", voidProvider)
+                console.log(voidSigner);
+                setDefaultSigner(voidSigner);
+
+            })
+            // const voidSigner = new ethers.VoidSigner("5Hg584SyhDRfVneuhYxbTRpsfC1hpjaZJVB7akUKUg5DcedQ", )
+
+            // setSigner(voidSigner.claimDefaultAccount());
+            // await functionsToExport.extensionSetup();
         }
+
         return true;
     }
     const showTransactionProgress = async (result) => {
@@ -103,13 +156,32 @@ export const Web3Provider = (props) => {
         return receipt;
 
     }
+    functionsToExport.updateUserProfile = async (updatedBody) => {
+        try {
+            const res = await updateUser(account, updatedBody);
+            const newUser = res?.data;
+            setUserDetails(newUser);
+            return res;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+    functionsToExport.signOut = async () => {
+        setEvmProvider(undefined);
+        setAccounts(undefined);
+        setSigner(undefined);
+        setUserDetails(undefined);
+        // history.push("/")
+
+    }
 
     //New address  0x53e507C95cC72F672e29a16e73D575BCB2272538
     functionsToExport.getCollectionCreationPrice = async () => {
         await checkSigner();
         console.log(FactoryAbi)
         console.log(signer);
-        const factoryContract = new Contract(factoryContractAddress, FactoryAbi, signer);
+        const factoryContract = new Contract(factoryContractAddress, FactoryAbi, defaultSigner);
         console.log(factoryContract);
         const result = await factoryContract.getPrice();
         console.log(result);
@@ -128,6 +200,7 @@ export const Web3Provider = (props) => {
     }
 
     functionsToExport.getUserCollections = async () => {
+        console.log(signer);
         await checkSigner();
         const factoryContract = new Contract(factoryContractAddress, FactoryAbi, signer);
         const result = await factoryContract.getUserCollections();
@@ -145,7 +218,7 @@ export const Web3Provider = (props) => {
 
     functionsToExport.totalCollections = async () => {
         await checkSigner();
-        const factoryContract = new Contract(factoryContractAddress, FactoryAbi, signer);
+        const factoryContract = new Contract(factoryContractAddress, FactoryAbi, defaultSigner);
         const result = await factoryContract.totalCollections();
         return result;
         console.log(result);
@@ -153,7 +226,7 @@ export const Web3Provider = (props) => {
 
     functionsToExport.getCollections = async (startIndex, endIndex) => {
         await checkSigner();
-        const factoryContract = new Contract(factoryContractAddress, FactoryAbi, signer);
+        const factoryContract = new Contract(factoryContractAddress, FactoryAbi, defaultSigner);
         const result = await factoryContract.getCollectionsPaginated(startIndex, endIndex);
         return result;
         console.log(result);
@@ -166,7 +239,7 @@ export const Web3Provider = (props) => {
     }
 
     functionsToExport.tokenURI = async (tokenID, contractAddress) => {
-        const nftContract = new Contract(contractAddress, NftABI, signer);
+        const nftContract = new Contract(contractAddress, NftABI, defaultSigner);
         const result = await nftContract.tokenURI(tokenID);
         console.log(result);
         return result;
@@ -174,14 +247,14 @@ export const Web3Provider = (props) => {
 
     functionsToExport.getTokenRoyalty = async (tokenID, contractAddress) => {
         await checkSigner();
-        const nftContract = new Contract(contractAddress, NftABI, signer);
+        const nftContract = new Contract(contractAddress, NftABI, defaultSigner);
         const result = await nftContract.getTokenRoyalty(tokenID);
         console.log(result);
     }
 
     functionsToExport.totalSupply = async (contractAddress) => {
         await checkSigner();
-        const nftContract = new Contract(contractAddress, NftABI, signer);
+        const nftContract = new Contract(contractAddress, NftABI, defaultSigner);
         const result = await nftContract.totalSupply();
 
         console.log(result);
@@ -189,21 +262,21 @@ export const Web3Provider = (props) => {
     }
 
     functionsToExport.balanceOf = async (userAddress, contractAddress) => {
-        const nftContract = new Contract(contractAddress, NftABI, signer);
+        const nftContract = new Contract(contractAddress, NftABI, defaultSigner);
         const result = await nftContract.balanceOf(userAddress);
         return result;
         console.log(result);
     }
 
     functionsToExport.tokenByIndex = async (contractAddress, index) => {
-        const nftContract = new Contract(contractAddress, NftABI, signer);
+        const nftContract = new Contract(contractAddress, NftABI, defaultSigner);
         const result = await nftContract.tokenByIndex(index);
         console.log(result);
     }
 
     functionsToExport.tokenOfOwnerByIndex = async (ownerAddress, index, contractAddress) => {
         await checkSigner();
-        const nftContract = new Contract(contractAddress, NftABI, signer);
+        const nftContract = new Contract(contractAddress, NftABI, defaultSigner);
         const result = await nftContract.tokenOfOwnerByIndex(ownerAddress, index);
         console.log(result);
         return result;
@@ -293,8 +366,9 @@ export const Web3Provider = (props) => {
 
 
     }
+    functionsToExport.checkSigner = checkSigner;
 
-    return (<Web3Context.Provider value={{ account, ...functionsToExport }}>
+    return (<Web3Context.Provider value={{ account, userDetails, defaultSigner, ...functionsToExport }}>
         {props.children}
     </Web3Context.Provider>)
 }

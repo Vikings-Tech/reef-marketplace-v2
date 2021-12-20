@@ -11,7 +11,7 @@ import Web3Context from "../../Context/Web3Context";
 
 const UserCollections = () => {
     const history = useHistory()
-    const { getUserCollections, totalCollections, getCollections } = useContext(Web3Context);
+    const { getUserCollections, totalCollections, getCollections, defaultSigner } = useContext(Web3Context);
     const [userCollections, setUserCollections] = useState(undefined);
     const [allCollections, setAllCollections] = useState(undefined);
     const [fetchedCollections, setFetchedCollections] = useState(0);
@@ -27,7 +27,7 @@ const UserCollections = () => {
         getAllCollections();
         getUserCollections().then(data => setUserCollections(data));
 
-    }, [])
+    }, [defaultSigner])
     const getMoreCollections = async () => {
         setAllCollections([...allCollections, ...(await getCollections(fetchedCollections, Math.min(fetchedCollections + 5, totalCollectionsN)))]);
         setFetchedCollections(Math.min(fetchedCollections + 5, totalCollectionsN));

@@ -8,7 +8,7 @@ import Web3Context from "../../../../Context/Web3Context";
 const NFTListedCard = (props) => {
     const { metaData = {}, tokenId, nftContract, price, royalty, creator, itemId } = props
     const history = useHistory()
-    const { tokenURI, unlistItem } = useContext(Web3Context);
+    const { tokenURI, unlistItem, defaultSigner } = useContext(Web3Context);
     const [currentMetaData, setCurrentMetaData] = useState({});
     const [nftData, setNftData] = useState();
     useEffect(() => {
@@ -21,9 +21,12 @@ const NFTListedCard = (props) => {
             setNftData(nftData);
             setCurrentMetaData(nftData.metaData);
         }
-        fetchMetaData();
+        if (defaultSigner) {
 
-    }, [tokenId]);
+            fetchMetaData();
+        }
+
+    }, [tokenId, defaultSigner]);
     const handleClick = async () => {
         if (await unlistItem(itemId)); {
             history.push("/")

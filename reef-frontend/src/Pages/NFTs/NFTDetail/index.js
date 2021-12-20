@@ -47,7 +47,6 @@ const NFTDetail = ({ contractAddress, tokenId, metaData, ownerAddress, isApprove
             value = "0.00001";
             showAlert('Alert!', "Value cannot be lesser than 0.00001", 'error', 1000);
         }
-        setPrice(value);
 
     }
     const handleDayChange = ({ target }) => {
@@ -86,12 +85,16 @@ const NFTDetail = ({ contractAddress, tokenId, metaData, ownerAddress, isApprove
 
 
     return (<div>
-        <div class="md:grid md:grid-cols-2 md:gap-6">
+        <div class="md:grid md:grid-cols-2 md:gap-6 text-white">
             <div>
                 <CollectionCard metaData={metaData} />
                 <div className="flex flex-col">
                     <Select label={"Sale Type"} values={SALE_TYPE} value={type} setValue={setType} />
-                    {type === SALE_TYPE[0] ? <FixedPriceForm /> : <AuctionForm />}
+                    {type === SALE_TYPE[0] ?
+                        FixedPriceForm()
+                        :
+                        AuctionForm()
+                    }
                     <button
                         onClick={handleSetListed}
                         type="button"
@@ -105,7 +108,7 @@ const NFTDetail = ({ contractAddress, tokenId, metaData, ownerAddress, isApprove
             <div class="mt-5 md:mt-0">
                 <form>
                     <div class="shadow sm:rounded-md sm:overflow-hidden">
-                        <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                        <div class="px-4 py-5 bg-transparent border rounded-md space-y-6 sm:p-6">
                             {Object.keys(metaData).map((attribute) => {
                                 console.log(attribute);
 

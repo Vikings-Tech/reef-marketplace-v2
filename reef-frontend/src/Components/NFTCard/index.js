@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getJSONfromHash } from "../../config/axios";
 
-const NFTCard = ({ metaData, metaDataHash, sale }) => {
+const NFTCard = ({ metaData, metaDataHash, sale, ownerAddress }) => {
     const [currentMetaData, setCurrentMetaData] = useState({});
     return (<>
         <div className="glass-2 py-2 text-white">
@@ -15,7 +15,7 @@ const NFTCard = ({ metaData, metaDataHash, sale }) => {
             </div>
             <Link to={`${"sdf"}`} >
                 <div className=" w-full truncate  mx-4  font-bold"> {currentMetaData?.title || metaData?.title}</div>
-                <div className=" truncate  px-4 text-sm mb-4">@{"Unknown"}</div>
+                <div className=" truncate  px-4 text-sm mb-4">@{ownerAddress || "Unknown"}</div>
                 {(false) &&
                     <div className="flex px-4 pt-8 pb-4 my-4 border-t border-white justify-between items-center">
                         <div>

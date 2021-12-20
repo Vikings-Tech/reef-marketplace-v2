@@ -9,12 +9,12 @@ import { getJSONfromHash } from '../../config/axios';
 import Web3Context from '../../Context/Web3Context';
 import NFTDetail from '../NFTs/NFTDetail';
 import DetailBanner from './DetailBanner';
-
+import getEvmAddress from "utils/evm-address";
 
 const CollectionDetail = () => {
     console.log("HEre");
     const history = useHistory();
-    const { totalSupply, balanceOf, tokenOfOwnerByIndex, tokenURI, isApprovedForAll } = useContext(Web3Context)
+    const { totalSupply, balanceOf, tokenOfOwnerByIndex, tokenURI, isApprovedForAll, defaultSigner, account } = useContext(Web3Context)
     const { metaDataHash, contractAddress, ownerAddress } = useParams();
     const [currentMetaData, setCurrentMetaData] = useState({});
     const [totalNFTs, setTotalNFTs] = useState(-1);
@@ -33,11 +33,11 @@ const CollectionDetail = () => {
         const checkApproval = async () => {
             setIsApproved(await isApprovedForAll(ownerAddress, contractAddress));
         }
-        if (contractAddress) {
+        if (contractAddress && defaultSigner) {
             checkApproval();
             fetchNFTs();
         }
-    }, [contractAddress])
+    }, [contractAddress, defaultSigner])
     useEffect(() => {
         const fetchMetaData = async () => {
             if (metaDataHash) {
@@ -92,20 +92,23 @@ const CollectionDetail = () => {
                     NFTDetails.length <= 0 ?
                         <EmptySection item="NFT" onClick={() => history.push(`/${contractAddress}/${metaDataHash}/${ownerAddress}/mint`)} /> :
                         <>    <div className="my-8 max-w-6xl mx-auto grid grid-cols-3 gap-4">{NFTDetails.map(nftData => {
-                            return (<div onClick={() => setSelectedNFT(nftData)}><NFTCard {...nftData} /></div>)
+                            return (<div onClick={() => setSelectedNFT(nftData)}><NFTCard ownerAddress={ownerAddress} {...nftData} /></div>)
                         })}</div>
-                            <div class="px-4 py-3  text-center sm:px-6">
-                                <Link to={`/${contractAddress}/${metaDataHash}/${ownerAddress}/mint`} class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    Create New NFT +
-                                </Link>
-                            </div></>}
+                            {account && ownerAddress.toLowerCase() === getEvmAddress(account).toLowerCase() &&
+                                < div class="px-4 py-3  text-center sm:px-6">
+                                    <Link to={`/${contractAddress}/${metaDataHash}/${ownerAddress}/mint`} class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Create New NFT +
+                                    </Link>
+                                </div>
+                            }
+                        </>}
 
 
 
 
             </div>
         </div>
-    </div>)
+    </div >)
 
 }
 export default CollectionDetail;

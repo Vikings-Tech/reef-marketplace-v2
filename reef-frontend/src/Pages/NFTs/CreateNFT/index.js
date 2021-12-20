@@ -96,7 +96,7 @@ const CreateNFT = () => {
             <div class="mt-5 md:mt-0 md:col-span-2">
                 <form onSubmit={e => e.preventDefault() && createNFTFromData()}>
                     <div class="shadow sm:rounded-md sm:overflow-hidden">
-                        <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                        <div class="px-4 py-5 blur-glass text-white space-y-6 sm:p-6">
                             {Object.keys(metaData).map((attribute) => {
                                 if (typeof metaData[attribute] === "string") {
                                     return (<div className="flex items-center">
@@ -121,7 +121,7 @@ const CreateNFT = () => {
                                 value={newAttributeName}
                                 onChange={(e) => setNewAttributeName(e.target.value)}
                             />
-                            <button onClick={() => handleNewAttribute(newAttributeName)} class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button onClick={() => handleNewAttribute(newAttributeName)} class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 + Add Attribute
                             </button>
                             <div class="w-full  px-3 mb-6 md:mb-0">
@@ -148,8 +148,8 @@ const CreateNFT = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <button onClick={createNFTFromData} class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <div class="px-4 py-3  text-center sm:px-6">
+                            <button onClick={createNFTFromData} class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Create NFT
                             </button>
                         </div>

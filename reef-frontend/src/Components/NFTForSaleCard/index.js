@@ -15,7 +15,6 @@ const NFTForSaleCard = (props) => {
     const [nftData, setNftData] = useState();
     const [bid, setBid] = useState(0);
     const [timeLeft, setTimeLeft] = useState(new Date());
-    console.log(props);
     const calculateTimeLeft = (endTime) => {
         let currDate = Date.now();
         console.log(endTime);
@@ -27,7 +26,7 @@ const NFTForSaleCard = (props) => {
     useEffect(() => {
         if (auction?.timeEnding) {
             const timer = setTimeout(() => {
-                calculateTimeLeft(auction.timeEnding.toString());
+                calculateTimeLeft(auction?.timeEnding?.toString());
             }, 1000);
         }
     });

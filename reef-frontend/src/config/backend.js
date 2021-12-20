@@ -1,6 +1,6 @@
 const axios = require("axios");
 const instance = axios.create({
-    baseURL: "https://api.pinata.cloud",
+    baseURL: "https://reef-backend.herokuapp.com/v1",
 });
 export const getHeader = () => {
     return {
@@ -25,9 +25,19 @@ export const pinFileToIPFS = (file) => {
     const url = `/pinning/pinFileToIPFS`;
     return instance.post(url, formData, getMultipartHeader())
 }
-export const pinJSONToIPFS = (json) => {
-    const url = `/pinning/pinJSONToIPFS`;
+export const createUser = (json) => {
+    const url = `/auth/register`;
     return instance.post(url, json, getHeader())
+
+}
+export const getUser = (wallet) => {
+    const url = `/users/${wallet}`;
+    return instance.get(url, getHeader())
+
+}
+export const updateUser = (wallet, body) => {
+    const url = `/users/${wallet}`;
+    return instance.patch(url, body, getHeader())
 
 }
 export const unPin = (hash) => {
